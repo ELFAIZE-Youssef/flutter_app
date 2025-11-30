@@ -9,13 +9,45 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
   bool _passwordVisible = false;
   bool _loading = false;
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    final emailPattern = r'^[^@]+@[^@]+\.[^@]+';
+    final regex = RegExp(emailPattern);
+    if (!regex.hasMatch(value)) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please confirm your password';
+    }
+    if (value != _passwordController.text) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
@@ -33,7 +65,6 @@ class _RegisterPageState extends State<RegisterPage> {
       );
 
       Navigator.pushReplacementNamed(context, "/login");
-
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? "Registration failed")),
@@ -50,85 +81,114 @@ class _RegisterPageState extends State<RegisterPage> {
         title: const Text('Register'),
         centerTitle: true,
         backgroundColor: Colors.teal,
+        elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.asset('assets/images/logo.jpg', height: 100),
+              Center(
+                child: Image.asset(
+                  'assets/images/logo.jpg',
+                  height: 100,
+                ),
+              ),
               const SizedBox(height: 30),
-
               TextFormField(
                 controller: _emailController,
-                decoration: _input("Email", Icons.email),
-                validator: (value) =>
-                    value!.contains("@") ? null : "Enter a valid email",
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: const Icon(Icons.email),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: _validateEmail,
               ),
               const SizedBox(height: 20),
-
               TextFormField(
                 controller: _passwordController,
                 obscureText: !_passwordVisible,
-                decoration: _passwordField("Password"),
-                validator: (value) =>
-                    value!.length >= 6 ? null : "Min 6 characters",
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
+                ),
+                validator: _validatePassword,
               ),
               const SizedBox(height: 20),
-
               TextFormField(
                 controller: _confirmPasswordController,
                 obscureText: !_passwordVisible,
-                decoration: _passwordField("Confirm Password"),
-                validator: (value) =>
-                    value == _passwordController.text
-                        ? null
-                        : "Passwords do not match",
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
+                ),
+                validator: _validateConfirmPassword,
               ),
               const SizedBox(height: 20),
-
               _loading
-                  ? const CircularProgressIndicator()
+                  ? const Center(child: CircularProgressIndicator())
                   : ElevatedButton(
                       onPressed: _register,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         backgroundColor: Colors.teal,
                       ),
-                      child: const Text("Register", style: TextStyle(fontSize: 18)),
+                      child: const Text('Register',
+                          style: TextStyle(fontSize: 18)),
                     ),
+              const SizedBox(height: 10),
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, "/login"),
-                child: const Text("Already have an account? Login here"),
-              )
+                onPressed: () {
+                  Navigator.pushNamed(context, "/login");
+                },
+                child: const Text(
+                  'Already have an account? Login here',
+                  style: TextStyle(color: Colors.teal),
+                ),
+              ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  InputDecoration _input(String text, IconData icon) {
-    return InputDecoration(
-      labelText: text,
-      prefixIcon: Icon(icon),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-    );
-  }
-
-  InputDecoration _passwordField(String text) {
-    return InputDecoration(
-      labelText: text,
-      prefixIcon: const Icon(Icons.lock),
-      suffixIcon: IconButton(
-        icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off),
-        onPressed: () {
-          setState(() => _passwordVisible = !_passwordVisible);
-        },
-      ),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 }

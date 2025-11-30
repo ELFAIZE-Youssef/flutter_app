@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -11,6 +16,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Page'),
+        centerTitle: true,
         backgroundColor: Colors.teal,
         actions: [
           IconButton(
@@ -33,19 +39,50 @@ class HomePage extends StatelessWidget {
                 children: [
                   const CircleAvatar(
                     radius: 40,
-                    backgroundImage: AssetImage('assets/images/youssef_avatar.jpg'),
+                    backgroundImage: AssetImage(
+                      'assets/images/youssef_avatar.jpg',
+                    ),
                   ),
+                  const SizedBox(height: 10),
                   Text(
-                    user?.email ?? "No email",
-                    style: const TextStyle(color: Colors.white),
+                    user?.email ?? 'Youssef.ELFAIZE@example.com',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Emsi Chatbot'),
-              onTap: () => Navigator.pop(context),
+              leading: const Icon(Icons.category),
+              title: const Text('Fruit Classifier'),
+              onTap: () {
+                Navigator.pushNamed(context, "/fruitClasifier");
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.chat),
+              title: const Text('Emsi CHATBOT'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            const Divider(color: Colors.grey),
+            ListTile(
+              leading: const Icon(Icons.account_circle),
+              title: const Text('Profile'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              trailing: const Icon(Icons.arrow_forward),
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+              },
             ),
             ListTile(
               leading: const Icon(Icons.logout),
@@ -59,8 +96,10 @@ class HomePage extends StatelessWidget {
         ),
       ),
       body: const Center(
-        child: Text("Welcome to the Home Page!",
-            style: TextStyle(fontSize: 24)),
+        child: Text(
+          'Welcome to the Home Page!',
+          style: TextStyle(fontSize: 24),
+        ),
       ),
     );
   }

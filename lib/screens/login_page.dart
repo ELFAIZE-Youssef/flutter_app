@@ -9,12 +9,33 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
   bool _loading = false;
 
-  final _formKey = GlobalKey<FormState>();
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    final emailPattern = r'^[^@]+@[^@]+\.[^@]+';
+    final regex = RegExp(emailPattern);
+    if (!regex.hasMatch(value)) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
+  }
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
@@ -28,7 +49,6 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       Navigator.pushReplacementNamed(context, "/home");
-
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? "Login failed")),
@@ -45,73 +65,93 @@ class _LoginPageState extends State<LoginPage> {
         title: const Text('Login'),
         centerTitle: true,
         backgroundColor: Colors.teal,
+        elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.asset('assets/images/logo.jpg', height: 100),
+              Image.asset('assets/images/Logo.jpg', height: 100),
+              const Text(
+                'Welcome Back!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.teal,
+                ),
+              ),
               const SizedBox(height: 30),
-
               TextFormField(
                 controller: _emailController,
-                decoration: _input("Email", Icons.email),
-                validator: (value) =>
-                    value!.contains("@") ? null : "Invalid email",
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: const Icon(Icons.email),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: _validateEmail,
               ),
               const SizedBox(height: 20),
-
               TextFormField(
                 controller: _passwordController,
                 obscureText: !_passwordVisible,
-                decoration: _passwordField("Password"),
-                validator: (value) =>
-                    value!.length >= 6 ? null : "Min 6 characters",
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
+                ),
+                validator: _validatePassword,
               ),
               const SizedBox(height: 20),
-
               _loading
-                  ? const CircularProgressIndicator()
+                  ? const Center(child: CircularProgressIndicator())
                   : ElevatedButton(
                       onPressed: _login,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         backgroundColor: Colors.teal,
                       ),
-                      child: const Text("Login", style: TextStyle(fontSize: 18)),
+                      child: const Text('Login',
+                          style: TextStyle(fontSize: 18)),
                     ),
-
+              const SizedBox(height: 10),
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, "/register"),
-                child: const Text("Don't have an account? Register here"),
-              )
+                onPressed: () {
+                  Navigator.pushNamed(context, "/register");
+                },
+                child: const Text(
+                  'Don\'t have an account? Register here',
+                  style: TextStyle(color: Colors.teal),
+                ),
+              ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  InputDecoration _input(String text, IconData icon) {
-    return InputDecoration(
-      labelText: text,
-      prefixIcon: Icon(icon),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-    );
-  }
-
-  InputDecoration _passwordField(String text) {
-    return InputDecoration(
-      labelText: text,
-      prefixIcon: const Icon(Icons.lock),
-      suffixIcon: IconButton(
-        icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off),
-        onPressed: () => setState(() => _passwordVisible = !_passwordVisible),
-      ),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 }
