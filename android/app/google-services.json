@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "373651944894",
+    "project_id": "smart-elfaize",
+    "storage_bucket": "smart-elfaize.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373651944894:android:d2ef42d6cd01d5028bf5ef",
+        "android_client_info": {
+          "package_name": "com.example.smart_app_elfaize"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIKV7l0e6M7UvVikpMXnndZaUqhBVq4ro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
