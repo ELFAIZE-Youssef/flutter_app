@@ -58,14 +58,22 @@ class _HomePageState extends State<HomePage> {
               leading: const Icon(Icons.category),
               title: const Text('Fruit Classifier'),
               onTap: () {
-                Navigator.pushNamed(context, "/fruitClasifier");
+                Navigator.pushNamed(context, "/fruitClassifier");
               },
             ),
             ListTile(
               leading: const Icon(Icons.chat),
-              title: const Text('Emsi CHATBOT'),
+              title: const Text('EMSI Chatbot'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pushNamed(context, "/chatbot");
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.chat_bubble),
+              title: const Text('RAG Chatbot'),
+              subtitle: const Text('With Documents'),
+              onTap: () {
+                Navigator.pushNamed(context, "/chatbotRag");
               },
             ),
             const Divider(color: Colors.grey),
@@ -90,6 +98,14 @@ class _HomePageState extends State<HomePage> {
               onTap: () async {
                 await FirebaseAuth.instance.signOut();
                 Navigator.pushReplacementNamed(context, "/login");
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.psychology),
+              title: const Text('CoT Chatbot'),
+              subtitle: const Text('Chain of Thoughts'),
+              onTap: () {
+                Navigator.pushNamed(context, "/chatbotCot");
               },
             ),
           ],

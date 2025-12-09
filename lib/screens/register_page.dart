@@ -93,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               Center(
                 child: Image.asset(
-                  'assets/images/logo.jpg',
+                  'assets/images/Logo.jpg',
                   height: 100,
                 ),
               ),
