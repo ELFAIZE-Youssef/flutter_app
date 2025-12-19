@@ -76,6 +76,14 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, "/chatbotRag");
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.psychology),
+              title: const Text('CoT Chatbot'),
+              subtitle: const Text('Chain of Thoughts'),
+              onTap: () {
+                Navigator.pushNamed(context, "/chatbotCot");
+              },
+            ),
             const Divider(color: Colors.grey),
             ListTile(
               leading: const Icon(Icons.account_circle),
@@ -98,14 +106,6 @@ class _HomePageState extends State<HomePage> {
               onTap: () async {
                 await FirebaseAuth.instance.signOut();
                 Navigator.pushReplacementNamed(context, "/login");
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.psychology),
-              title: const Text('CoT Chatbot'),
-              subtitle: const Text('Chain of Thoughts'),
-              onTap: () {
-                Navigator.pushNamed(context, "/chatbotCot");
               },
             ),
           ],

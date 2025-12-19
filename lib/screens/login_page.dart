@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
     }
     return null;
   }
-
+//fontion login fait appel a firebase et utilise signInWithEmailAndPassword
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 

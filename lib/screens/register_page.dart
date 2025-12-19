@@ -48,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     return null;
   }
-
+//fontion pour s enregistrer utilise createUserWithEmailAndPassword
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
 

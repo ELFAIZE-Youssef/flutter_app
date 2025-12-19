@@ -30,7 +30,7 @@ class _FruitClassifierPageState extends State<FruitClassifierPage> {
     super.initState();
     loadModel();
   }
-
+// --- Chargement du Modèle TFLite ---
   Future<void> loadModel() async {
     try {
       _interpreter = await Interpreter.fromAsset("assets/models/fruit_classifier.tflite");
@@ -55,7 +55,7 @@ class _FruitClassifierPageState extends State<FruitClassifierPage> {
       });
     }
   }
-
+// --- Sélection d'Image ---
   Future<void> pickImage() async {
     final picker = ImagePicker();
     final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
@@ -69,7 +69,7 @@ class _FruitClassifierPageState extends State<FruitClassifierPage> {
       await predictImage();
     }
   }
-
+// --- Prédiction de l'Image ---
   Future<void> predictImage() async {
     if (_image == null) return;
 
@@ -150,7 +150,7 @@ class _FruitClassifierPageState extends State<FruitClassifierPage> {
       });
     }
   }
-
+// --- Nettoyage ---
   @override
   void dispose() {
     _interpreter.close();
